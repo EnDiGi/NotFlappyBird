@@ -23,8 +23,8 @@
 }
 
 #flapButton {
-	padding: 10px 30px;
-	border-radius: 7px;
-	border: 2px solid black;
-	background-color: #f6f6f6;
+	height: 98vh;
+	width: 98vh;
+	border: none;
+	background: none;
 }
