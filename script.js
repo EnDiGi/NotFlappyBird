@@ -142,7 +142,6 @@ function gameLoop(){
 }
 
 function makeFlap(event){
-	console.log(event)
 	if(event.key == " "){
 		bird.j_frame = 0;
 		bird.flap()
