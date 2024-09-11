@@ -2,7 +2,6 @@
 let score = 0;
 let started = false;
 let pipes = [];
-let frames = 0;
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -121,8 +120,8 @@ function update(bird, hasLoss){
 
 function endScreen(){
 	clearInterval(pipeInterval)
-	document.removeEventListener("keydown", makeFlap);
-	document.addEventListener("keydown", retry);
+	document.removeEventListener("keypress", makeFlap);
+	document.addEventListener("keypress", retry);
 	flapBtn.onclick = function(){retry({key: " "})};
 	flapBtn.textContent = "Retry";
 }
@@ -133,8 +132,6 @@ function gameLoop(){
 	let [x, y, loss] = update(bird, hasLoss);
 	draw(bird);
 
-	frames++
-
 	bird.x = x;
 	bird.y = y;
 	hasLoss = loss;
@@ -144,7 +141,8 @@ function gameLoop(){
 	requestAnimationFrame(gameLoop)
 }
 
-function makeFlap(event, ){
+function makeFlap(event){
+	console.log(event)
 	if(event.key == " "){
 		bird.j_frame = 0;
 		bird.flap()
@@ -156,14 +154,13 @@ function retry(event){
 		score = 0;
 		started = false;
 		pipes = [];
-		frames = 0;
 		scoreCounter.textContent = 0;
 		bird.y = canvas.height / 2 - 28 / 2
 		bird.acceleration = 0;
-		document.addEventListener("keydown", makeFlap)
+		document.addEventListener("keypress", makeFlap)
 		flapBtn.onclick = function(){makeFlap({key: " "})};
 		flapBtn.textContent = "Flap";
-		document.removeEventListener("keydown", retry)
+		document.removeEventListener("keypress", retry)
 		pipeInterval = setInterval(spawnPipe, 1000)
 		gameLoop()
 	}
@@ -175,7 +172,7 @@ function spawnPipe(){
 	pipes.push(new Pipe)
 }
 
-document.addEventListener("keydown", makeFlap)
+document.addEventListener("keypress", makeFlap)
 flapBtn.onclick = function(){makeFlap({key: " "})};
 
 pipeInterval = setInterval(spawnPipe, 1250)
