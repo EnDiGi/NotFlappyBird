@@ -123,7 +123,6 @@ function endScreen(){
 	document.removeEventListener("keypress", makeFlap);
 	document.addEventListener("keypress", retry);
 	flapBtn.onclick = function(){retry({key: " "})};
-	flapBtn.textContent = "Retry";
 }
 
 function gameLoop(){
@@ -158,7 +157,6 @@ function retry(event){
 		bird.acceleration = 0;
 		document.addEventListener("keypress", makeFlap)
 		flapBtn.onclick = function(){makeFlap({key: " "})};
-		flapBtn.textContent = "Flap";
 		document.removeEventListener("keypress", retry)
 		pipeInterval = setInterval(spawnPipe, 1000)
 		gameLoop()
