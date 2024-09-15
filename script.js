@@ -2,6 +2,7 @@
 let score = 0;
 let started = false;
 let pipes = [];
+let hasClicked = false;
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -11,6 +12,11 @@ const flapBtn = document.getElementById("flapButton");
 
 canvas.width = 380;
 canvas.height = 666;
+
+document.getElementById("credits").style.width = `${(document.getElementById("body").offsetWidth - canvas.width) / 2}px`
+
+jumpSound = new Audio("sounds/jump.wav")
+gameOverSound = new Audio("sounds/punch.wav")
 
 const bird = {
 	width: 40,
@@ -25,7 +31,9 @@ const bird = {
 	j_frames: 16,
 	j_frame: 0,
 	flap: function(){
-		if(this.j_frame === 0){this.j_frame++}
+		if(this.j_frame === 0){
+			this.j_frame++; 
+			jumpSound.play()}
 		this.y -= this.jumpStrength / this.j_frames;
 		this.acceleration = 0;
 		started = true;
@@ -47,7 +55,7 @@ const base = {
 class Pipe{
 	constructor(){
 		this.spacing = 125;
-		this.x = canvas.width; // Math.random() * 10 +10 
+		this.x = canvas.width;
 		this.y = Math.ceil(Math.random() * (canvas.height - canvas.height / 6 * 3)) + canvas.height / 6;
 		this.width = 80;
 		this.height = 750;
@@ -102,7 +110,10 @@ function update(bird, hasLoss){
 
 	if (bird.y <= 0){bird.y = 0}
 
-	if(bird.y + bird.height >= base.y){hasLoss = true}
+	if(bird.y + bird.height >= base.y){
+		hasLoss = true;
+		bird.y = base.y - bird.height;
+	}
 
 	for(let pipe of pipes){
 		if (pipe.checkCollision(bird)){
@@ -114,11 +125,13 @@ function update(bird, hasLoss){
 		}
 	}
 
+	document.getElementById("credits").style.width = `${(document.getElementById("body").offsetWidth - canvas.width) / 2}px`
 
 	return [bird.x, bird.y, hasLoss]
 }
 
 function endScreen(){
+	gameOverSound.play()
 	clearInterval(pipeInterval)
 	document.removeEventListener("keypress", makeFlap);
 	document.addEventListener("keypress", retry);
@@ -135,15 +148,20 @@ function gameLoop(){
 	bird.y = y;
 	hasLoss = loss;
 
-	if(hasLoss === true){endScreen(score); return}
+	if(hasLoss === true){
+		endScreen();
+		return;
+	}
 
 	requestAnimationFrame(gameLoop)
 }
 
 function makeFlap(event){
-	if(event.key == " "){
+	if(event.key == " " && !hasClicked){
+		hasClicked = true;
 		bird.j_frame = 0;
 		bird.flap()
+		setTimeout(function(){hasClicked = false}, 120)
 	}
 }
 
@@ -159,6 +177,7 @@ function retry(event){
 		flapBtn.onclick = function(){makeFlap({key: " "})};
 		document.removeEventListener("keypress", retry)
 		pipeInterval = setInterval(spawnPipe, 1000)
+		hasClicked = false
 		gameLoop()
 	}
 }
