@@ -23,8 +23,19 @@
 }
 
 #flapButton {
-	height: 98vh;
-	width: 98vh;
+	height: 666px;
+	width: 380px;
 	border: none;
 	background: none;
+}
+
+#credits {
+	position: absolute;
+	color: #aaaaaa;
+	bottom: 10px;
+	font-size: 13px;
+}
+
+#creditsTitle{
+	font-size: 17px;
 }
